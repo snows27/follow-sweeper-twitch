@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
@@ -140,20 +140,16 @@ export function FollowerList({
         ref={scrollRef}
         role="rowgroup"
         className={cn(
-          "h-[calc(100dvh-9rem)] min-h-[32rem] overflow-y-auto transition-opacity",
+          "relative h-[calc(100dvh-9rem)] min-h-[32rem] overflow-y-auto transition-opacity",
           dimmed && "opacity-60",
         )}
       >
         {loading ? (
-          <>
-            <div className="flex items-center justify-center gap-4 border-b border-line bg-surface-2/50 px-4 py-4">
-              <Mascot name="loading" size={88} bob priority />
-              <p className="max-w-xs text-sm text-muted">{dict.followers.loadingText}</p>
-            </div>
+          <SlowLoading text={dict.followers.loadingText}>
             {Array.from({ length: SKELETON_ROWS }, (_, i) => (
               <SkeletonRow key={i} index={i} />
             ))}
-          </>
+          </SlowLoading>
         ) : (
         <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
           {virtualizer.getVirtualItems().map((row) => {
@@ -176,6 +172,36 @@ export function FollowerList({
 }
 
 const SKELETON_ROWS = 10;
+
+/** How long a load must take before the mascot appears (fast loads show only the skeleton). */
+const SLOW_LOAD_MS = 1500;
+
+/**
+ * Skeleton rows first. If loading is still going after SLOW_LOAD_MS, dim the skeleton
+ * and fade in a mascot card in the middle — reassurance only when the wait is noticeable.
+ */
+function SlowLoading({ text, children }: { text: string; children: React.ReactNode }) {
+  const [slow, setSlow] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSlow(true), SLOW_LOAD_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <>
+      <div className={cn("transition-opacity duration-500", slow && "opacity-40")}>{children}</div>
+      {slow && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex h-full max-h-[36rem] items-center justify-center p-4">
+          <div className="flex animate-fade-in flex-col items-center gap-2 rounded-card border border-line bg-surface/95 px-6 py-5 text-center shadow-xl">
+            <Mascot name="loading" size={120} bob />
+            <p className="max-w-xs text-sm font-semibold text-muted">{text}</p>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 /** Placeholder row with the same shape as a real one, so nothing jumps when data arrives. */
 function SkeletonRow({ index }: { index: number }) {
