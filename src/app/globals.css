@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — Twitch-inspired, light + dark.
+ * Use them as Tailwind utilities: bg-bg, bg-surface, text-muted, bg-brand, border-line…
+ *
+ * Every color is `light-dark(<light>, <dark>)`. Which side is used follows
+ * `color-scheme` on <html>:
+ *   - no data-theme      -> "light dark": follows the browser / OS setting (default)
+ *   - data-theme="light" -> always light
+ *   - data-theme="dark"  -> always dark
+ * The saved choice is applied before first paint by the inline script in the root layout.
+ *
+ * *-fg tokens are for colored TEXT: darker in light mode so it stays readable.
+ */
+@theme {
+  --color-bg: light-dark(#f7f7f8, #0e0e10);
+  --color-surface: light-dark(#ffffff, #18181b);
+  --color-surface-2: light-dark(#f2f2f4, #1f1f23);
+  --color-surface-3: light-dark(#e6e6ea, #26262c);
+  --color-line: light-dark(#dedee3, #2f2f35);
+  --color-fg: light-dark(#0e0e10, #efeff1);
+  --color-muted: light-dark(#53535f, #adadb8);
+  --color-subtle: light-dark(#6e6e7a, #848494);
+
+  --color-brand: #9146ff;
+  --color-brand-hover: #772ce8;
+  --color-brand-soft: light-dark(#9146ff1a, #9146ff26);
+  --color-brand-fg: light-dark(#6a1fd6, #bf94ff);
+
+  --color-danger: light-dark(#e91916, #eb0400);
+  --color-danger-hover: light-dark(#c4130f, #bf0300);
+  --color-danger-soft: light-dark(#e919161a, #eb040026);
+  --color-danger-fg: light-dark(#c4130f, #ff8a85);
+
+  --color-warning: #ffb31a;
+  --color-warning-soft: light-dark(#ffb31a2e, #ffb31a26);
+  --color-warning-fg: light-dark(#8a5300, #ffb31a);
+
+  --color-success: #00c76a;
+  --color-success-soft: light-dark(#00c76a1f, #00c76a26);
+  --color-success-fg: light-dark(#00733d, #00c76a);
+
+  --font-sans: var(--font-inter), var(--font-thai), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 0.75rem;
+
+  --animate-mascot-bob: mascot-bob 2.4s ease-in-out infinite;
+
+  @keyframes mascot-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-bg);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Tailwind v4 no longer gives buttons a pointer cursor — restore it for
+ * everything clickable, and show "not allowed" when disabled.
+ */
+@layer base {
+  button,
+  [role="button"],
+  [role="radio"],
+  select,
+  summary,
+  label:has(input[type="checkbox"]),
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"] {
+    cursor: pointer;
+  }
+  button:disabled,
+  select:disabled,
+  input:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* Consistent, visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/*
+ * Landing art panel: full window height on the right. One curved fade anchored at the
+ * top-right corner, so the left and bottom edges melt away together — no square corner.
+ */
+.hero-art-mask {
+  --fade: radial-gradient(ellipse 115% 95% at 100% 15%, #000 45%, rgb(0 0 0 / 0.6) 62%, transparent 82%);
+  -webkit-mask-image: var(--fade);
+  mask-image: var(--fade);
+}
+
+/* Landing art: softer on light backgrounds, stronger on dark ones (dark art blends into dark bg). */
+.hero-art {
+  opacity: 0.28;
+}
+:root[data-theme="dark"] .hero-art {
+  opacity: 0.5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero-art {
+    opacity: 0.5;
+  }
+}
+
+/* Native <dialog> backdrop. */
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
