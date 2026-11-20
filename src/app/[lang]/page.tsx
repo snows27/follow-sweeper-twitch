@@ -61,8 +61,9 @@ export default async function LandingPage({ params }: PageProps<"/[lang]">) {
               <Suspense fallback={<LoginButtonFallback size="lg" />}>
                 <LoginButton size="lg" />
               </Suspense>
-              <p className="flex items-center gap-1.5 text-sm text-subtle">
-                <Lock className="size-3.5" aria-hidden="true" />
+              {/* Icon is inline so it stays on the first line when the note wraps; both lines centred. */}
+              <p className="max-w-sm text-center text-sm text-balance text-subtle">
+                <Lock className="mr-1.5 inline-block size-3.5 align-[-2px]" aria-hidden="true" />
                 {t.ctaNote}
               </p>
             </div>

@@ -102,7 +102,7 @@ export default async function HelpPage({ params }: PageProps<"/[lang]/help">) {
                     aria-hidden="true"
                   />
                 </summary>
-                <p className="px-5 pb-4 text-sm text-muted">{item.a}</p>
+                <p className="px-5 pb-5 pt-3 text-sm text-muted">{item.a}</p>
               </details>
             ))}
           </div>

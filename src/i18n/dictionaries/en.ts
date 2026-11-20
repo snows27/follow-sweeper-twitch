@@ -21,7 +21,8 @@ export const en = {
     followers: "Followers",
     privacy: "Privacy",
     help: "Help and FAQ",
-    comingSoon: "Coming soon",
+    /** Short label for the mobile top menu. */
+    helpShort: "Help",
     menu: "Menu",
   },
   landing: {

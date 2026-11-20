@@ -12,9 +12,22 @@ import type { Dictionary } from "@/i18n/dictionaries/en";
 
 export const ROW_HEIGHT = 76;
 
-/** Shared column layout for the header and the rows. */
+/**
+ * Compact column layout (landing demo): on small screens only checkbox + account,
+ * with roles and date squeezed under the name.
+ */
 export const ROW_GRID =
   "grid grid-cols-[2.25rem_minmax(0,1fr)] items-center gap-4 md:grid-cols-[2.25rem_minmax(0,2fr)_minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,1.2fr)]";
+
+/**
+ * Wide column layout (Followers page): all five columns at every size.
+ * On phones the table is wider than the screen and scrolls sideways.
+ */
+export const ROW_GRID_WIDE =
+  "grid grid-cols-[2.25rem_minmax(0,2fr)_minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,1.2fr)] items-center gap-4";
+
+/** Min width of the wide table on phones, so columns don't get squeezed. */
+export const WIDE_TABLE_MIN_W = "min-w-[720px] md:min-w-0";
 
 /** "today", "1 day ago", "3 mo ago", "4 yr 3 mo ago" — relative to now. */
 export function formatAgo(ms: number, now: number, dict: Dictionary): string {
@@ -75,9 +88,21 @@ type Props = {
   fmt: { dateTime: (ms: number) => string; date: (ms: number) => string };
   /** Reference time for "x ago" labels (fixed per page load). */
   now: number;
+  /** "compact" (default, landing demo) or "wide" (all columns at every size). */
+  layout?: "compact" | "wide";
 };
 
-export const FollowerRow = memo(function FollowerRow({ follower: f, selected, onToggle, fmt, now }: Props) {
+export const FollowerRow = memo(function FollowerRow({
+  follower: f,
+  selected,
+  onToggle,
+  fmt,
+  now,
+  layout = "compact",
+}: Props) {
+  const wide = layout === "wide";
+  /** Desktop-only column in compact layout; always shown in wide layout. */
+  const col = wide ? "min-w-0" : "hidden min-w-0 md:block";
   const { dict } = useI18n();
   const t = dict.followers;
   const followedAgo = formatAgo(f.followedAtMs, now, dict);
@@ -92,7 +117,7 @@ export const FollowerRow = memo(function FollowerRow({ follower: f, selected, on
         onToggle(f.id);
       }}
       className={cn(
-        ROW_GRID,
+        wide ? ROW_GRID_WIDE : ROW_GRID,
         "h-full cursor-pointer border-b border-line px-4 transition-colors",
         selected ? "bg-brand-soft hover:bg-brand/25" : "hover:bg-surface-2",
       )}
@@ -137,8 +162,8 @@ export const FollowerRow = memo(function FollowerRow({ follower: f, selected, on
             <ExternalLink className="size-3.5 shrink-0 opacity-0 group-hover:opacity-100" aria-hidden="true" />
           </a>
           <p className="truncate text-sm text-subtle">@{f.login}</p>
-          {/* Mobile: roles + date under the name */}
-          <div className="mt-0.5 flex items-center gap-2 text-xs text-subtle md:hidden">
+          {/* Compact layout on mobile: roles + date under the name */}
+          <div className={cn("mt-0.5 flex items-center gap-2 text-xs text-subtle md:hidden", wide && "hidden")}>
             <span className="shrink-0" title={fmt.dateTime(f.followedAtMs)}>
               {followedAgo}
             </span>
@@ -150,18 +175,18 @@ export const FollowerRow = memo(function FollowerRow({ follower: f, selected, on
       </div>
 
       {/* Roles */}
-      <div role="cell" className="hidden min-w-0 md:block">
+      <div role="cell" className={col}>
         <RoleTags f={f} dict={dict} />
       </div>
 
       {/* Followed: exact date + how long ago */}
-      <div role="cell" className="hidden min-w-0 md:block">
+      <div role="cell" className={col}>
         <p className="truncate text-sm">{fmt.dateTime(f.followedAtMs)}</p>
         <p className="truncate text-xs text-subtle">{followedAgo}</p>
       </div>
 
       {/* Account created: exact date + how long ago */}
-      <div role="cell" className="hidden min-w-0 md:block">
+      <div role="cell" className={col}>
         <p className="truncate text-sm">{f.createdAtMs ? fmt.date(f.createdAtMs) : "—"}</p>
         {createdAgo && <p className="truncate text-xs text-subtle">{createdAgo}</p>}
       </div>

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { resolveLocale } from "@/i18n/server";
 import { requireUser } from "@/server/auth/guard";
 import { FollowersSkeleton, FollowersView } from "@/features/followers/components/followers-view";
+import { LogoMark } from "@/components/layout/logo";
 import type { Locale } from "@/i18n/config";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/followers">): Promise<Metadata> {
@@ -15,7 +16,10 @@ export default async function FollowersPage({ params }: PageProps<"/[lang]/follo
   return (
     <div className="mx-auto max-w-[96rem]">
       <header className="mb-5">
-        <h1 className="text-2xl font-bold sm:text-3xl">{dict.followers.title}</h1>
+        <h1 className="flex items-center gap-2.5 text-2xl font-bold sm:text-3xl">
+          <LogoMark className="size-8 shrink-0 sm:size-9" />
+          {dict.followers.title}
+        </h1>
         <p className="mt-1 text-sm text-muted">{dict.followers.subtitle}</p>
       </header>
       <Suspense fallback={<FollowersSkeleton />}>

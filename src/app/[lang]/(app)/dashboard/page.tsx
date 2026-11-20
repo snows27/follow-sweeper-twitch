@@ -21,17 +21,23 @@ export default async function DashboardPage({ params }: PageProps<"/[lang]/dashb
 
   return (
     <div className="mx-auto max-w-5xl">
-      <div className="flex items-center gap-4">
-        <Mascot name="welcome" size={96} priority />
+      {/*
+        Big welcome mascot. The sticker is 512px, so up to 256 CSS px it stays sharp on 2x screens:
+        224px on desktop, 160px stacked above the text on phones. Negative margins trim the
+        transparent padding around the art.
+      */}
+      <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:gap-6 sm:text-left">
+        <Mascot name="welcome" size={224} priority className="-my-4 size-40 sm:-my-6 sm:size-56" />
         <div>
-          <Suspense fallback={<div className="h-9 w-64 animate-pulse rounded bg-surface-3" />}>
+          <Suspense fallback={<div className="mx-auto h-9 w-64 animate-pulse rounded bg-surface-3 sm:mx-0" />}>
             <Welcome locale={locale} dict={dict} />
           </Suspense>
           <p className="mt-1 text-muted">{t.intro}</p>
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
+      {/* Extra top margin offsets the mascot's negative margin so the cards don't touch its feet. */}
+      <div className="mt-8 grid gap-4 sm:mt-12 md:grid-cols-2">
         <Card className="flex flex-col">
           <span className="mb-3 flex size-10 items-center justify-center rounded-lg bg-brand-soft">
             <Users className="size-5 text-brand-fg" aria-hidden="true" />
