@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local-only docs and knowledge graph
+/graphify-out/
+/CLAUDE.md
+/docs/
