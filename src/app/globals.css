@@ -126,13 +126,18 @@ body {
 }
 
 /*
- * Landing art panel: full window height on the right. One curved fade anchored at the
- * top-right corner, so the left and bottom edges melt away together — no square corner.
+ * Landing art panel: full window height on the right.
+ * Straight vertical fade toward the text (poster look) + a LONG soft fade at the bottom.
+ * The two fades multiply, and because both are long the bottom-left corner melts away
+ * instead of showing a hard square corner.
  */
 .hero-art-mask {
-  --fade: radial-gradient(ellipse 115% 95% at 100% 15%, #000 45%, rgb(0 0 0 / 0.6) 62%, transparent 82%);
-  -webkit-mask-image: var(--fade);
-  mask-image: var(--fade);
+  --fade-left: linear-gradient(to left, #000 45%, rgb(0 0 0 / 0.55) 70%, transparent 100%);
+  --fade-bottom: linear-gradient(to top, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 50%);
+  -webkit-mask-image: var(--fade-left), var(--fade-bottom);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--fade-left), var(--fade-bottom);
+  mask-composite: intersect;
 }
 
 /* Landing art: softer on light backgrounds, stronger on dark ones (dark art blends into dark bg). */
