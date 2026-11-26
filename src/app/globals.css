@@ -38,6 +38,8 @@
   --color-warning-fg: light-dark(#8a5300, #ffb31a);
 
   --color-success: #00c76a;
+  /* Filled green behind white text (e.g. the active "Yes" segment): 4.8:1 with white. */
+  --color-success-solid: #00843f;
   --color-success-soft: light-dark(#00c76a1f, #00c76a26);
   --color-success-fg: light-dark(#00733d, #00c76a);
 

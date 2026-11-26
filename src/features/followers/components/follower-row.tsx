@@ -90,6 +90,8 @@ type Props = {
   now: number;
   /** "compact" (default, landing demo) or "wide" (all columns at every size). */
   layout?: "compact" | "wide";
+  /** 1-based position in the whole table (header = 1), for screen readers in the virtualized list. */
+  rowIndex?: number;
 };
 
 export const FollowerRow = memo(function FollowerRow({
@@ -99,8 +101,11 @@ export const FollowerRow = memo(function FollowerRow({
   fmt,
   now,
   layout = "compact",
+  rowIndex,
 }: Props) {
   const wide = layout === "wide";
+  // Grey "subtle" text drops below 4.5:1 on the purple selected tint; use the stronger grey there.
+  const sub = selected ? "text-muted" : "text-subtle";
   /** Desktop-only column in compact layout; always shown in wide layout. */
   const col = wide ? "min-w-0" : "hidden min-w-0 md:block";
   const { dict } = useI18n();
@@ -111,7 +116,7 @@ export const FollowerRow = memo(function FollowerRow({
   return (
     <div
       role="row"
-      aria-selected={selected}
+      aria-rowindex={rowIndex}
       onClick={(e) => {
         if (shouldIgnoreRowClick(e.target)) return;
         onToggle(f.id);
@@ -161,9 +166,9 @@ export const FollowerRow = memo(function FollowerRow({
             <span className="truncate">{f.displayName}</span>
             <ExternalLink className="size-3.5 shrink-0 opacity-0 group-hover:opacity-100" aria-hidden="true" />
           </a>
-          <p className="truncate text-sm text-subtle">@{f.login}</p>
+          <p className={cn("truncate text-sm", sub)}>@{f.login}</p>
           {/* Compact layout on mobile: roles + date under the name */}
-          <div className={cn("mt-0.5 flex items-center gap-2 text-xs text-subtle md:hidden", wide && "hidden")}>
+          <div className={cn("mt-0.5 flex items-center gap-2 text-xs md:hidden", sub, wide && "hidden")}>
             <span className="shrink-0" title={fmt.dateTime(f.followedAtMs)}>
               {followedAgo}
             </span>
@@ -182,13 +187,13 @@ export const FollowerRow = memo(function FollowerRow({
       {/* Followed: exact date + how long ago */}
       <div role="cell" className={col}>
         <p className="truncate text-sm">{fmt.dateTime(f.followedAtMs)}</p>
-        <p className="truncate text-xs text-subtle">{followedAgo}</p>
+        <p className={cn("truncate text-xs", sub)}>{followedAgo}</p>
       </div>
 
       {/* Account created: exact date + how long ago */}
       <div role="cell" className={col}>
         <p className="truncate text-sm">{f.createdAtMs ? fmt.date(f.createdAtMs) : "—"}</p>
-        {createdAgo && <p className="truncate text-xs text-subtle">{createdAgo}</p>}
+        {createdAgo && <p className={cn("truncate text-xs", sub)}>{createdAgo}</p>}
       </div>
     </div>
   );

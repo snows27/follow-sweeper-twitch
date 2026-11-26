@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, KeyboardEvent, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 const field =
@@ -46,7 +46,7 @@ export type SegmentTone = "brand" | "success" | "danger";
 
 const activeTone: Record<SegmentTone, string> = {
   brand: "bg-brand text-white",
-  success: "bg-success text-white",
+  success: "bg-success-solid text-white",
   danger: "bg-danger text-white",
 };
 
@@ -67,18 +67,41 @@ export function Segmented<T extends string>({
   name: string;
   size?: "sm" | "md";
 }) {
+  // Standard radio-group keyboard: one Tab stop (the checked option), arrow keys move and select.
+  const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = options.length - 1;
+    const next =
+      e.key === "ArrowRight" || e.key === "ArrowDown"
+        ? index === last ? 0 : index + 1
+        : e.key === "ArrowLeft" || e.key === "ArrowUp"
+          ? index === 0 ? last : index - 1
+          : e.key === "Home"
+            ? 0
+            : e.key === "End"
+              ? last
+              : null;
+    if (next === null) return;
+    e.preventDefault();
+    onChange(options[next].value);
+    const buttons = e.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+    buttons?.[next]?.focus();
+  };
+  const checkedIndex = Math.max(0, options.findIndex((o) => o.value === value));
+
   return (
     <div
       role="radiogroup"
       aria-label={name}
       className={cn("flex rounded-md bg-surface-2", size === "md" ? "h-[45px] p-1" : "h-8 p-0.5")}
     >
-      {options.map((opt) => (
+      {options.map((opt, i) => (
         <button
           key={opt.value}
           type="button"
           role="radio"
           aria-checked={value === opt.value}
+          tabIndex={i === checkedIndex ? 0 : -1}
+          onKeyDown={(e) => onKeyDown(e, i)}
           onClick={() => onChange(opt.value)}
           className={cn(
             "flex-1 rounded font-semibold whitespace-nowrap transition-colors",

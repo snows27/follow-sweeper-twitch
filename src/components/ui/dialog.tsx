@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -27,6 +27,8 @@ export function Dialog({
   className?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  // Several dialogs can be on the page at once (confirm + progress), so each needs its own id.
+  const titleId = useId();
 
   useEffect(() => {
     const el = ref.current;
@@ -38,7 +40,7 @@ export function Dialog({
   return (
     <dialog
       ref={ref}
-      aria-labelledby="dialog-title"
+      aria-labelledby={titleId}
       onCancel={(e) => {
         e.preventDefault();
         if (dismissible) onClose();
@@ -52,7 +54,7 @@ export function Dialog({
       )}
     >
       <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
-        <h2 id="dialog-title" className="text-lg font-bold">
+        <h2 id={titleId} className="text-lg font-bold">
           {title}
         </h2>
         {dismissible && (
@@ -62,7 +64,7 @@ export function Dialog({
             aria-label={closeLabel}
             className="rounded p-1 text-muted hover:bg-surface-3 hover:text-fg"
           >
-            <X className="size-5" />
+            <X className="size-5" aria-hidden="true" />
           </button>
         )}
       </div>

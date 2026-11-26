@@ -107,7 +107,8 @@ export function FollowerList({
     <div
       role="table"
       aria-label={dict.followers.title}
-      aria-rowcount={items.length}
+      // +1: the header row counts too. Only visible rows are in the DOM, so each row says where it sits.
+      aria-rowcount={items.length + 1}
       aria-busy={loading || undefined}
       className="relative overflow-hidden rounded-card border border-line bg-surface"
     >
@@ -127,6 +128,7 @@ export function FollowerList({
           <div role="rowgroup" className="sticky top-0 z-10">
             <div
               role="row"
+              aria-rowindex={1}
               className={cn(
                 ROW_GRID_WIDE,
                 "border-b border-line bg-surface-2 px-4 text-xs font-semibold uppercase tracking-wide text-muted",
@@ -174,6 +176,7 @@ export function FollowerList({
                     >
                       <FollowerRow
                         follower={f}
+                        rowIndex={row.index + 2}
                         selected={selected.has(f.id)}
                         onToggle={onToggle}
                         fmt={fmt}
