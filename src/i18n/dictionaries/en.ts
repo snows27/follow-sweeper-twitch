@@ -43,7 +43,7 @@ export const en = {
       },
       {
         title: "Search, filter & sort",
-        body: "Find followers by name, broadcaster type, account type, subscriber, ban status or profile picture. Sort any column.",
+        body: "Find followers by name, type, subscriber or ban status, profile picture, bio, account age when they followed, or follow time. Sort any column.",
       },
       {
         title: "Remove in bulk",
@@ -130,6 +130,20 @@ export const en = {
       moderators: "Moderator data couldn't be loaded.",
       vips: "VIP data couldn't be loaded.",
     },
+    followTimes: {
+      title: "Follow times",
+      burstsFound: "{count} busy hours",
+      burstsFoundOne: "1 busy hour",
+      noBursts: "No unusual bursts",
+      hint: "Follow-bot waves often show up as many follows in a short time. Tap a bar or a busy hour to show only the follows from then.",
+      caution: "A burst isn't proof of bots: a raid or a shout-out also brings real followers. Check the accounts before you remove them.",
+      chartLabel: "Follows per day, last 30 days",
+      dayValue: "{date}: {count} follows",
+      busyHours: "Busy hours",
+      burstCount: "{count} follows",
+      showing: "Showing follows from {range}",
+      clear: "Show all times",
+    },
     stats: {
       total: "Followers",
       shown: "Shown",
@@ -200,6 +214,17 @@ export const en = {
     no: "No",
     defaultAvatar: "Default",
     customAvatar: "Custom",
+    bio: "Bio",
+    bioEmpty: "Empty",
+    bioFilled: "Has bio",
+    ageAtFollow: "Account age when followed",
+    ageAtFollowOptions: {
+      any: "Any",
+      "1h": "Under 1 hour",
+      "1d": "Under 1 day",
+      "7d": "Under 7 days",
+      "30d": "Under 30 days",
+    },
   },
   remove: {
     dialogTitle: "Remove {count} followers?",

@@ -19,6 +19,8 @@ export type Follower = {
   /** Small (70x70) profile image URL */
   avatarUrl: string | null;
   isDefaultAvatar: boolean;
+  /** Profile has a bio. Only this flag is sent, never the bio text. */
+  hasBio: boolean;
   isSubscriber: boolean;
   isBanned: boolean;
   isModerator: boolean;

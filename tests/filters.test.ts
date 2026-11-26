@@ -17,6 +17,7 @@ const base: Omit<Follower, "id" | "login" | "displayName"> = {
   accountType: "none",
   avatarUrl: null,
   isDefaultAvatar: false,
+  hasBio: true,
   isSubscriber: false,
   isBanned: false,
   isModerator: false,
@@ -75,5 +76,31 @@ describe("activeFilterCount", () => {
   it("counts filters that differ from the defaults", () => {
     expect(activeFilterCount(defaultFilters)).toBe(0);
     expect(activeFilterCount({ ...defaultFilters, query: "x", banned: "yes" })).toBe(2);
+  });
+});
+
+describe("new account signals", () => {
+  const list = prepareFollowers([
+    { ...base, id: "a", login: "a", displayName: "a", createdAt: "2026-11-10T09:30:00Z" }, // 30 min old at follow
+    { ...base, id: "b", login: "b", displayName: "b", createdAt: "2026-11-08T10:00:00Z", hasBio: false }, // 2 days
+    { ...base, id: "c", login: "c", displayName: "c" }, // years
+    { ...base, id: "d", login: "d", displayName: "d", createdAt: null, hasBio: false }, // deleted
+  ]);
+
+  it("filters by account age when followed; deleted accounts drop out", () => {
+    expect(ids(applyFilters(list, { ...defaultFilters, ageAtFollow: "1h" }))).toEqual(["a"]);
+    expect(ids(applyFilters(list, { ...defaultFilters, ageAtFollow: "7d" }))).toEqual(["a", "b"]);
+  });
+
+  it("filters by bio", () => {
+    expect(ids(applyFilters(list, { ...defaultFilters, bio: "empty" }))).toEqual(["b", "d"]);
+    expect(ids(applyFilters(list, { ...defaultFilters, bio: "filled" }))).toEqual(["a", "c"]);
+  });
+
+  it("filters by follow time window, end excluded", () => {
+    const start = Date.parse("2026-11-01T10:00:00Z");
+    const window = { start, end: Date.parse("2026-11-10T10:00:00Z") };
+    expect(ids(applyFilters(followers, { ...defaultFilters, followWindow: window }))).toEqual(["3"]);
+    expect(activeFilterCount({ ...defaultFilters, followWindow: window, bio: "empty" })).toBe(2);
   });
 });

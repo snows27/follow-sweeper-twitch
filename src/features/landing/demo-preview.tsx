@@ -46,6 +46,7 @@ const items: FollowerItem[] = demo.map((d, i) => {
     accountType: "none",
     avatarUrl: d.avatarUrl ?? null,
     isDefaultAvatar: d.isDefaultAvatar ?? false,
+    hasBio: d.hasBio ?? !d.isDefaultAvatar,
     isSubscriber: d.isSubscriber ?? false,
     isBanned: d.isBanned ?? false,
     isModerator: d.isModerator ?? false,

@@ -1,10 +1,10 @@
 "use client";
 
 import { RotateCcw, Search } from "lucide-react";
-import { Input, Segmented } from "@/components/ui/form";
+import { Input, Segmented, Select } from "@/components/ui/form";
 import { useI18n } from "@/i18n/I18nProvider";
 import { cn } from "@/lib/cn";
-import type { FilterState, TriState } from "../types";
+import type { AgeAtFollow, FilterState, TriState } from "../types";
 import type { AccountType, BroadcasterType } from "@/types/api";
 
 type Props = {
@@ -19,6 +19,7 @@ type Props = {
 
 const BROADCASTER_TYPES: BroadcasterType[] = ["partner", "affiliate", "none"];
 const ACCOUNT_TYPES: AccountType[] = ["staff", "admin", "global_mod", "none"];
+const AGE_AT_FOLLOW: AgeAtFollow[] = ["any", "1h", "1d", "7d", "30d"];
 
 function toggle<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
@@ -157,6 +158,36 @@ export function FilterBar({ filters: f, update, reset, activeCount, hasSubscribe
               { value: "any", label: t.any },
               { value: "default", label: t.defaultAvatar },
               { value: "custom", label: t.customAvatar },
+            ]}
+          />
+        </Field>
+      </div>
+
+      {/* Row 3: account signals. Weak alone (many real lurkers have no picture or bio), stronger together. */}
+      <div className="grid gap-4 border-t border-line pt-4 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,2fr)_repeat(3,minmax(0,1fr))]">
+        <Field label={t.ageAtFollow}>
+          <Select
+            aria-label={t.ageAtFollow}
+            value={f.ageAtFollow}
+            onChange={(e) => update("ageAtFollow", e.target.value as AgeAtFollow)}
+            className="h-[45px] text-base"
+          >
+            {AGE_AT_FOLLOW.map((v) => (
+              <option key={v} value={v}>
+                {t.ageAtFollowOptions[v]}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field label={t.bio}>
+          <Segmented
+            name={t.bio}
+            value={f.bio}
+            onChange={(v) => update("bio", v)}
+            options={[
+              { value: "any", label: t.any },
+              { value: "empty", label: t.bioEmpty },
+              { value: "filled", label: t.bioFilled },
             ]}
           />
         </Field>

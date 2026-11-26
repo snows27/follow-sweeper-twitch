@@ -8,6 +8,11 @@ export type FollowerItem = Follower & {
 
 export type TriState = "any" | "yes" | "no";
 export type AvatarFilter = "any" | "default" | "custom";
+export type BioFilter = "any" | "empty" | "filled";
+/** Account was at most this old when it followed. */
+export type AgeAtFollow = "any" | "1h" | "1d" | "7d" | "30d";
+/** Followed inside [start, end) — picked from the follow-time chart. */
+export type FollowWindow = { start: number; end: number };
 
 export type FilterState = {
   query: string;
@@ -17,6 +22,9 @@ export type FilterState = {
   subscriber: TriState;
   banned: TriState;
   avatar: AvatarFilter;
+  bio: BioFilter;
+  ageAtFollow: AgeAtFollow;
+  followWindow: FollowWindow | null;
 };
 
 export type SortColumn = "name" | "followedAt" | "createdAt";

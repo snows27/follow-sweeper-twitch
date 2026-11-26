@@ -11,10 +11,12 @@ export function useFormatters() {
     const tag = intlLocale[locale];
     const dateTime = new Intl.DateTimeFormat(tag, { dateStyle: "medium", timeStyle: "short" });
     const date = new Intl.DateTimeFormat(tag, { dateStyle: "medium" });
+    const time = new Intl.DateTimeFormat(tag, { timeStyle: "short" });
     const number = new Intl.NumberFormat(tag);
     return {
       dateTime: (ms: number) => dateTime.format(ms),
       date: (ms: number) => date.format(ms),
+      time: (ms: number) => time.format(ms),
       number: (n: number) => number.format(n),
     };
   }, [locale]);

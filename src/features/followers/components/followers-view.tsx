@@ -14,6 +14,7 @@ import { activeFilterCount, defaultFilters, defaultSort } from "../lib/filters";
 import { planRemoval } from "../lib/targets";
 import { StateCard } from "@/components/common/state-card";
 import { FilterBar } from "./filter-bar";
+import { FollowTimes } from "./follow-times";
 import { FollowerList } from "./follower-list";
 import { RemoveDialog } from "./remove-dialog";
 import { RemoveProgress } from "./remove-progress";
@@ -78,6 +79,7 @@ export function FollowersSkeleton() {
           hasBanData
         />
       </fieldset>
+      <FollowTimes followers={[]} now={0} active={null} onWindow={noop} />
       <Toolbar
         stats={[
           { label: t.stats.total, value: null },
@@ -211,6 +213,13 @@ export function FollowersView() {
         activeCount={activeFilterCount(filter.filters)}
         hasSubscriberData={!unavailable.has("subscriptions")}
         hasBanData={!unavailable.has("banned")}
+      />
+
+      <FollowTimes
+        followers={followers}
+        now={state.status === "ready" ? state.loadedAt : 0}
+        active={filter.filters.followWindow}
+        onWindow={(w) => filter.update("followWindow", w)}
       />
 
       <Toolbar

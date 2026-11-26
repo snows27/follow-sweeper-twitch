@@ -61,6 +61,7 @@ export async function loadFollowers({ user, accessToken }: ApiContext): Promise<
       accountType: (p?.type || "none") as AccountType,
       avatarUrl: p?.profile_image_url ? smallAvatar(p.profile_image_url) : null,
       isDefaultAvatar: !p?.profile_image_url || p.profile_image_url.includes("user-default-pictures"),
+      hasBio: Boolean(p?.description?.trim()),
       isSubscriber: has("subscriptions", f.user_id),
       isBanned: has("banned", f.user_id),
       isModerator: has("moderators", f.user_id),
